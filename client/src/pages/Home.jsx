@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom'
-import ThemeToggle from '../components/ThemeToggle'
+import AppHeader from '../components/AppHeader'
 import '../App.css'
 
 function Home() {
@@ -9,30 +8,7 @@ function Home() {
 
   return (
     <div className="app">
-      {/* Header */}
-      <header className="header">
-        <div className="header-inner">
-          <Link to="/" className="logo">
-            <span className="logo-icon">QR</span>
-            <span className="logo-text">PayQR</span>
-          </Link>
-          <nav className="nav">
-            <button onClick={() => scrollTo('features')} className="nav-link">Features</button>
-            <button onClick={() => scrollTo('how-it-works')} className="nav-link">How it works</button>
-            <button onClick={() => scrollTo('pricing')} className="nav-link">Pricing</button>
-            <button onClick={() => scrollTo('contact')} className="nav-link">Contact</button>
-          </nav>
-          <div className="header-actions">
-            <ThemeToggle />
-            <Link to="/signup" className="nav-link header-link">
-              Sign up
-            </Link>
-            <Link to="/login" className="btn btn-primary header-cta">
-              Login
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AppHeader variant="home" scrollTo={scrollTo} />
 
       {/* Hero */}
       <section className="hero">

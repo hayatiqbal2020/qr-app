@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Formik, Form, Field } from 'formik'
-import ThemeToggle from '../components/ThemeToggle'
+import AppHeader from '../components/AppHeader'
 import { signup as signupApi } from '../api/authApi.js'
 import '../App.css'
 
@@ -60,20 +60,7 @@ function SignUp() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-inner">
-          <Link to="/" className="logo">
-            <span className="logo-icon">QR</span>
-            <span className="logo-text">PayQR</span>
-          </Link>
-          <div className="header-actions">
-            <ThemeToggle />
-            <Link to="/" className="nav-link link-back">
-              ← Back to home
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       <section className="login-section">
         <div className="login-bg"></div>
