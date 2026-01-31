@@ -1,16 +1,60 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { Formik, Form, Field } from 'formik'
 import ThemeToggle from '../components/ThemeToggle'
+import { signin as signinApi } from '../api/authApi.js'
 import '../App.css'
 
-function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+const initialValues = {
+  login: '',
+  password: '',
+}
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Placeholder: add your login logic here (e.g. API call)
-    console.log('Login:', { email, password })
+function validate(values) {
+  const errors = {}
+  const login = (values.login || '').trim()
+  if (!login) {
+    errors.login = 'Mobile number or email is required'
+  } else if (login.includes('@')) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(login)) {
+      errors.login = 'Enter a valid email address'
+    }
+  } else {
+    const digits = login.replace(/\D/g, '')
+    if (digits.length !== 10) {
+      errors.login = 'Enter a valid 10-digit mobile number'
+    }
+  }
+  if (!values.password) {
+    errors.password = 'Password is required'
+  }
+  return errors
+}
+
+function Login() {
+  const navigate = useNavigate()
+
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
+    setStatus(null)
+    try {
+      const data = await signinApi({
+        login: values.login.trim(),
+        password: values.password,
+      })
+      if (data?.userId) {
+        localStorage.setItem('payqr_user', JSON.stringify({
+          userId: data.userId,
+          name: data.name,
+          mobile: data.mobile,
+          email: data.email,
+        }))
+      }
+      navigate('/', { replace: true })
+    } catch (err) {
+      const msg = err.response?.data?.error || 'Network error. Please try again.'
+      setStatus(msg)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -36,31 +80,64 @@ function Login() {
           <h1 className="login-title">Welcome back</h1>
           <p className="login-subtitle">Sign in to your PayQR account</p>
 
-          <form onSubmit={handleSubmit} className="login-form">
-            <label className="login-label">Email or phone</label>
-            <input
-              type="text"
-              className="login-input"
-              placeholder="Enter email or phone number"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+          <Formik
+            initialValues={initialValues}
+            validate={validate}
+            onSubmit={handleSubmit}
+          >
+            {({ errors, touched, status, isSubmitting, values }) => (
+              <Form className="login-form">
+                <div className="field-group">
+                  <div className={`float-field ${values.login ? 'has-value' : ''}`}>
+                    <Field
+                      id="login"
+                      name="login"
+                      type="text"
+                      className="float-input"
+                      placeholder=" "
+                      autoComplete="username"
+                      inputMode="text"
+                    />
+                    <label className="float-label" htmlFor="login">
+                      Mobile No or Email Id
+                    </label>
+                  </div>
+                  {touched.login && errors.login && (
+                    <p className="login-error" role="alert">{errors.login}</p>
+                  )}
+                </div>
 
-            <label className="login-label">Password</label>
-            <input
-              type="password"
-              className="login-input"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+                <div className="field-group">
+                  <div className={`float-field ${values.password ? 'has-value' : ''}`}>
+                    <Field
+                      id="password"
+                      name="password"
+                      type="password"
+                      className="float-input"
+                      placeholder=" "
+                      autoComplete="current-password"
+                    />
+                    <label className="float-label" htmlFor="password">
+                      Password
+                    </label>
+                  </div>
+                  {touched.password && errors.password && (
+                    <p className="login-error" role="alert">{errors.password}</p>
+                  )}
+                </div>
 
-            <button type="submit" className="btn btn-primary btn-block login-submit">
-              Sign in
-            </button>
-          </form>
+                {status && <p className="login-error" role="alert">{status}</p>}
+
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-block login-submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Signing in...' : 'Sign in'}
+                </button>
+              </Form>
+            )}
+          </Formik>
 
           <p className="login-footer">
             Don&apos;t have an account? <Link to="/signup">Sign up</Link>

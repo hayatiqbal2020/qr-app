@@ -781,6 +781,75 @@
   gap: 1.25rem;
 }
 
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.login-error {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #dc2626;
+  text-align: left;
+}
+
+/* ----- Floating label input (default = placeholder inside; focus = label above, blue border) ----- */
+.float-field {
+  position: relative;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.float-field:focus-within,
+.float-field.has-value {
+  border-width: 2px;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 1px #7c3aed;
+}
+
+.float-input {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--app-text);
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+}
+
+.float-input::placeholder {
+  color: transparent;
+}
+
+.float-label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--input-placeholder);
+  pointer-events: none;
+  transition: top 0.2s ease, transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+}
+
+.float-field:focus-within .float-label,
+.float-field.has-value .float-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #7c3aed;
+  background: var(--card-bg);
+  padding: 0 0.35rem;
+  margin-left: -0.35rem;
+}
+
 .login-label {
   font-size: 0.9rem;
   font-weight: 500;
@@ -816,15 +885,6 @@
   font-size: 1rem;
 }
 
-.login-error {
-  margin: 0 0 0.5rem;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.1);
-  border-radius: 8px;
-  text-align: center;
-}
 
 .login-footer {
   text-align: center;

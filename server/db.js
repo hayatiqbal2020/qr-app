@@ -1,6 +1,13 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
+import dotenv from 'dotenv'
 import { MongoClient } from 'mongodb'
 
+// Load .env from server directory so it works when running from project root
+dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.env') })
+
 const uri = process.env.MONGODB_URI
+const dbName = process.env.DB_NAME || 'db_qr-app'
 let client = null
 let db = null
 
@@ -15,8 +22,7 @@ export async function connectDB() {
   if (db) return db
   client = new MongoClient(uri)
   await client.connect()
-  // Use database name from URI, or default to 'payqr'
-  db = client.db()
+  db = client.db(dbName)
   return db
 }
 
