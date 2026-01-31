@@ -1,4 +1,4 @@
-# PayQR
+# qr-app (PayQR)
 
 Single project with **React (Vite)** frontend and **Node.js (Express)** backend.
 
